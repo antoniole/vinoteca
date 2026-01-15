@@ -1,0 +1,49 @@
+REQUISITOS PARA LA APLICACIÓN VINOTECA
+
+BASE DE DATOS (database.py)
+· Dos tablas:
+	- Tabla para guardar los vinos (vinos):
+		> Nombre del vino
+		> Tipo de vino: [Tinto,Blanco,Rosado,Espumoso,Espumoso rosado]
+		> Añada
+		> Bodega
+		> Pais
+		> Denominación de origen
+		> Variedad_1
+		> Porcentaje_variedad_1
+		> Variedad_2
+		> Porcentaje_variedad_2
+		> Variedad_3
+		> Porcentaje_variedad_3
+		> Variedad_4
+		> Porcentaje_variedad_4
+		> Es_guarda
+		> Fecha de consumo si es de guarda
+		> Cantidad de botellas
+		> Ficha técnica
+	- Tabla para guardar notas de cata (catas):
+		> id del vino (la misma que en la tabla de vinos: CLAVE EXTERNA)
+		> Nota de cata
+		> Fecha de la nota de cata
+· Gestión de la base de datos:
+	- Función para añadir un vino a la tabla vinos
+	- Función para leer todos los vinos de la tabla.
+	- Función para añadir una ficha técnica
+	- Función para añadir una nota de cata
+
+MODELOS (models.py)
+· Dos objetos:
+	- Vinos (características de los vinos, incluida la ficha técnica)
+	- Nota (Notas de cata, que pueden ser varias por cada vino)
+		
+
+MODIFICACIONES Y PENDIENTES:
+· Vigilar el stock de botellas, y evitar que se descuente una botella si ya no hay, o si se modifica una nota de cata.
+· Incluir un botón para borrar un vino
+· Incluir lógica para modificar una ficha técnica
+· Incluir filtros por:
+	- Añada
+	- Denominación
+	- Pais
+	- Tipo
+
