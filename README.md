@@ -10,7 +10,7 @@ App para gestión de vinoteca doméstica
 - Base de datos SQLite
 
 ## Capturas de pantalla
-```text
+
 docs/
 ├─ Pantalla_principal.png
 └─ Diálogo_añadir_vino.png
