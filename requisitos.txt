@@ -32,14 +32,14 @@ BASE DE DATOS (database.py)
 	- Función para añadir una nota de cata
 
 MODELOS (models.py)
-· Dos objetos:
+· Tres objetos:
 	- Vinos (características de los vinos, incluida la ficha técnica)
 	- Nota (Notas de cata, que pueden ser varias por cada vino)
+	- Filtro (Filtros que se pueden aplicar: denominación, país, cosecha, tipo)
 		
 
 MODIFICACIONES Y PENDIENTES:
 · Vigilar el stock de botellas, y evitar que se descuente una botella si ya no hay, o si se modifica una nota de cata.
-· Incluir un botón para borrar un vino
 · Incluir lógica para modificar una ficha técnica
 · Incluir filtros por:
 	- Añada

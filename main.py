@@ -23,9 +23,6 @@ def refrescar_contenido() -> None:
     lista_vinos.clear() # Contenedor para almacenar los vinos de la bodega
     vinos = db.obtener_vinos(filtros)
 
-   
-
-    
     with lista_vinos: # Columna layout
         if not vinos:
             ui.label('La bodega está vacía').classes('text-gray italic')
@@ -54,16 +51,13 @@ def refrescar_contenido() -> None:
                         # Botones para edición/eliminación de cada vino
                         with ui.column().classes('gap-1 items-left'):                            
                             ui.button(icon='edit_document',color='green').props('size=10px')
-                            ui.button(icon='o_delete',color='red',on_click=lambda v=v: confirmar_eliminacion_vino(v)).props('size=10px')
-                            
-                        
+                            ui.button(icon='o_delete',color='red',on_click=lambda v=v: confirmar_eliminacion_vino(v)).props('size=10px')                       
                             
                     ui.separator()
                     # CUERPO ALINEADO (Usando el método de etiquetas alineadas)
                     with ui.grid(columns='100px auto').classes('w-full text-sm gap-y-1'):
                         ui.label('Cosecha:').classes('font-semibold text-gray-500')
-                        ui.label(str(v.cosecha))
-                        
+                        ui.label(str(v.cosecha))                        
                         ui.label('País:').classes('font-semibold text-gray-500')
                         ui.label(f"{v.pais}")
                         ui.label("D.O:").classes('font-semibold text-gray-500')
@@ -127,7 +121,13 @@ def leer_catas(vino_id):
     catas = db.obtener_catas(vino_id)
     return catas
 
-def confirmar_eliminacion_vino(vino):
+def confirmar_eliminacion_vino(vino: Vino) -> None:
+    '''
+    Función para confirmar el borrado del vino y evitar borrados accidentales. Función de seguridad.
+    
+    :param vino: Instancia de un vino
+    :type vino: Vino
+    '''
     with ui.dialog() as dialogo:
         with ui.card().classes():
             ui.label("Esto eliminará el vino y todas las catas asociadas.").classes('font-bold text-red-500')
@@ -140,6 +140,14 @@ def confirmar_eliminacion_vino(vino):
     dialogo.open()
 
 def eliminar_vino(vino_id: int, nombre: str) -> None:
+    '''
+    Función para eliminar un vino de la base de datos
+    
+    :param vino_id: La id del vino que se va a eliminar
+    :type vino_id: int
+    :param nombre: Nombre del vino que se va a eliminar
+    :type nombre: str
+    '''
     if db.borrar_vino(vino_id):
         ui.notify(f"{nombre} eliminado correctamente",type='positive')
         refrescar_contenido()
