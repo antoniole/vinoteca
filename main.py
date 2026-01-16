@@ -54,7 +54,7 @@ def refrescar_contenido() -> None:
                         # Botones para edición/eliminación de cada vino
                         with ui.column().classes('gap-1 items-left'):                            
                             ui.button(icon='edit_document',color='green').props('size=10px')
-                            ui.button(icon='o_delete',color='red').props('size=10px')
+                            ui.button(icon='o_delete',color='red',on_click=lambda v=v: confirmar_eliminacion_vino(v)).props('size=10px')
                             
                         
                             
@@ -126,6 +126,26 @@ def guardar_cata(vino_id,nota):
 def leer_catas(vino_id):
     catas = db.obtener_catas(vino_id)
     return catas
+
+def confirmar_eliminacion_vino(vino):
+    with ui.dialog() as dialogo:
+        with ui.card().classes():
+            ui.label("Esto eliminará el vino y todas las catas asociadas.").classes('font-bold text-red-500')
+            ui.label(f"¿Realmente quieres eliminar el vino {vino.nombre}?").classes('font-bold text-red-500')
+            
+            with ui.row().classes('w-full items-stretch'):
+                ui.button("Eliminar",icon="o_delete",color='white',on_click=lambda vino_id=vino.id,nombre=vino.nombre:eliminar_vino(vino_id,nombre))
+                ui.button("Cancelar",icon='o_cancel',color='red',on_click=dialogo.close)
+
+    dialogo.open()
+
+def eliminar_vino(vino_id: int, nombre: str) -> None:
+    if db.borrar_vino(vino_id):
+        ui.notify(f"{nombre} eliminado correctamente",type='positive')
+        refrescar_contenido()
+    else:
+        ui.notify("No se pudo eliminar el vino",type='negative')
+
 
 
 

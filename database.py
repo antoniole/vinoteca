@@ -153,6 +153,13 @@ class Database:
         
         self.cursor.execute(sql,valores)
         self.conn.commit()
+    
+    def borrar_vino(self,vino_id:int) :
+        cur = self.cursor.execute("DELETE FROM vinos WHERE id = ?",(vino_id,))
+        self.conn.commit()
+
+        return cur.rowcount == 1
+
         
     def guardar_nota_elaboracion(self,vino_id,texto):
         '''
