@@ -26,9 +26,9 @@ def refrescar_contenido() -> None:
     with lista_vinos: # Columna layout
         if not vinos:
             ui.label('La bodega está vacía').classes('text-gray italic')
-        # Creamos un contenedor grid que define 3 columnas en pantallas medianas/grandes
-        # 'grid-cols-1' para móviles y 'md:grid-cols-3' para escritorio
-        with ui.element('div').classes('grid grid-cols-1 md:grid-cols-3 gap-4 w-full'):
+        # Creamos un contenedor grid que define 4 columnas en pantallas medianas/grandes
+        # 'grid-cols-1' para móviles y 'md:grid-cols-4' para escritorio
+        with ui.element('div').classes('grid grid-cols-1 md:grid-cols-4 gap-4 w-full'):
             for v in vinos:
                 # Definimos los colores
                 colores = {
@@ -102,13 +102,20 @@ def refrescar_contenido() -> None:
                                     ui.label("Valoración:").classes('text-bold italic')
                                     ui.rating(value=c.valoracion,max=10,color='black')
                                     ui.separator()
-                        
-
-                        
+           
 
 def guardar_vino():
+
+    if not nuevo_vino.nombre:
+        ui.notify('El nombre del vino es obligatorio',type='negative')
+        return
+    if nuevo_vino.cantidad < 0:
+        ui.notify("Cantidad inválida",type='negative')
+        return
+    
     db.insertar_nuevo_vino(nuevo_vino)
-    ui.notify(f'Vino {nuevo_vino.nombre} añadido a la colección',type='positive')    
+    ui.notify(f'Vino {nuevo_vino.nombre} añadido a la colección',type='positive') 
+    dialogo_añadir_vino.close()   
     refrescar_contenido()
 
 
@@ -154,10 +161,10 @@ def eliminar_vino(vino_id: int, nombre: str) -> None:
     else:
         ui.notify("No se pudo eliminar el vino",type='negative')
 
-
-
-
-
+# def abrir_dialogo_nuevo_vino():
+#     global nuevo_vino
+#     nuevo_vino = Vino()
+#     dialogo_añadir_vino.open()
 
 dialogo_añadir_vino = ui.dialog()
 # --- Sección para añadir un nuevo vino a la base de datos ---
@@ -172,7 +179,7 @@ with dialogo_añadir_vino:
         denominacion = ui.input('Denominación').bind_value(nuevo_vino,'denominacion')
         guarda = ui.switch('Vino de guarda').bind_value(nuevo_vino,'guarda')
         fechaConsumo = ui.number('Fecha de consumo',value=2024,min=2000).bind_visibility_from(guarda,'value').bind_value(nuevo_vino,'fechaConsumo')
-        stock = ui.number('Cantidad',value=1).bind_value(nuevo_vino,'cantidad')
+        stock = ui.number('Cantidad',min=1).bind_value(nuevo_vino,'cantidad')
         with ui.expansion('FICHA TÉCNICA',icon='description').classes('w-full bg-gray-200 border'):
             with ui.element('div').classes('grid grid-cols-2 gap-4 w-full'):
                 uva1 = ui.input("Variedad principal").bind_value(nuevo_vino,'variedad1')
