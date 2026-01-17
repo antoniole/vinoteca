@@ -4,7 +4,7 @@ from models import Vino, Nota,FiltrosVino
 
 
 db = Database()
-nuevo_vino = Vino()
+# nuevo_vino = Vino()
 filtros = FiltrosVino()
 
 # --- DISEÑO DE LA PÁGINA ---
@@ -118,8 +118,6 @@ def guardar_vino():
     dialogo_añadir_vino.close()   
     refrescar_contenido()
 
-
-
 def guardar_cata(vino_id,nota):
     if not nota.fechaCata or not nota.notaCata:
         ui.notify('Completa la fecha y la nota', type='negative')
@@ -167,14 +165,10 @@ def eliminar_vino(vino_id: int, nombre: str) -> None:
     else:
         ui.notify("No se pudo eliminar el vino",type='negative')
 
-# def abrir_dialogo_nuevo_vino():
-#     global nuevo_vino
-#     nuevo_vino = Vino()
-#     dialogo_añadir_vino.open()
-
 dialogo_añadir_vino = ui.dialog()
 # --- Sección para añadir un nuevo vino a la base de datos ---
 with dialogo_añadir_vino:
+    nuevo_vino = Vino()
     with ui.card().classes('w-[1200px] overflow-y-auto'):
         ui.label('Añadir nuevo vino').classes('text-xl font-bold')
         nombre = ui.input('Nombre').bind_value(nuevo_vino,'nombre')
