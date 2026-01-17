@@ -77,6 +77,12 @@ class Database:
             if filtros.pais:
                 sql += " WHERE pais LIKE ?"
                 filtro = (filtros.pais,)
+            if filtros.sinStock:
+                sql += " WHERE cantidad = ?"
+                filtro = (0,)
+            if filtros.cantidad:
+                sql += " WHERE cantidad = ?"
+                filtro = (filtros.cantidad,)
                 
 
         self.cursor.execute(sql,filtro)

@@ -23,6 +23,10 @@ class Vino:
     fechaConsumo: int = None
     cantidad: int = 1
     fichaTecnica: str = ''
+
+    def disponible(self) -> bool:
+        return self.cantidad > 0
+
     
 @dataclass
 class Nota:
@@ -38,4 +42,7 @@ class FiltrosVino:
     tipo: Optional[str] = None
     pais: Optional[str] = None
     denominacion: Optional[str] = None
+    cantidad: Optional[int] = None
+    sinStock: Optional[bool] = False
+   
     

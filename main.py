@@ -64,7 +64,7 @@ def refrescar_contenido() -> None:
                         ui.label(f"{v.denominacion}").classes('font-mono font-semibold')
                         
                         ui.label('Stock:').classes('font-semibold text-gray-500')
-                        if v.cantidad > 0:
+                        if v.disponible():
                             ui.label(f"{v.cantidad} unidades").classes('font-bold text-blue-600')
                         else:
                             ui.label(f"{v.cantidad} unidades").classes('font-bold text-red-600')
@@ -119,7 +119,12 @@ def guardar_vino():
     refrescar_contenido()
 
 
+
 def guardar_cata(vino_id,nota):
+    if not nota.fechaCata or not nota.notaCata:
+        ui.notify('Completa la fecha y la nota', type='negative')
+        return
+    
     db.agregar_cata(vino_id,nota.notaCata,nota.fechaCata,nota.valoracion)
     ui.notify('Nota de cata guardada', type='positive')
     refrescar_contenido()
@@ -157,6 +162,7 @@ def eliminar_vino(vino_id: int, nombre: str) -> None:
     '''
     if db.borrar_vino(vino_id):
         ui.notify(f"{nombre} eliminado correctamente",type='positive')
+        dialogo_añadir_vino.close()
         refrescar_contenido()
     else:
         ui.notify("No se pudo eliminar el vino",type='negative')
@@ -205,6 +211,8 @@ with ui.card().classes('w-full mb-4'):
         ui.input("Denominacion").classes('text-gray').bind_value(filtros,'denominacion')
         ui.select(['Tinto','Blanco','Rosado','Espumoso rosado','Espumoso'],label='Tipo',with_input=True).bind_value(filtros,'tipo')
         ui.input("Pais").classes('text-black').bind_value(filtros,'pais')
+        ui.number("Cantidad").classes('text-black').bind_value(filtros,'cantidad')
+        ui.checkbox("Sin stock").bind_value(filtros,'sinStock')
         ui.button(
             text='Aplicar',
             icon='o_filter_alt',
@@ -218,6 +226,8 @@ with ui.card().classes('w-full mb-4'):
                 setattr(filtros,'denominacion',None),
                 setattr(filtros,'tipo',None),
                 setattr(filtros,'pais',None),
+                setattr(filtros,'cantidad',None),
+                setattr(filtros,'sinStock',False),
                 refrescar_contenido()),
                 
         )
