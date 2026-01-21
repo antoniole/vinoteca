@@ -165,6 +165,11 @@ class Database:
         self.conn.commit()
 
         return cur.rowcount == 1
+    
+    def actualizar_stock(self,vino_id:int,stock) -> None:
+        self.cursor.execute("UPDATE vinos SET cantidad = ? WHERE id = ?",(stock,vino_id))
+        self.conn.commit()
+        
 
         
     def guardar_nota_elaboracion(self,vino_id,texto):

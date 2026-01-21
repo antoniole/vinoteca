@@ -1,3 +1,5 @@
+
+
 from nicegui import ui
 from database import Database
 from models import Vino, Nota,FiltrosVino
@@ -62,15 +64,19 @@ def refrescar_contenido() -> None:
                         ui.label(f"{v.pais}")
                         ui.label("D.O:").classes('font-semibold text-gray-500')
                         ui.label(f"{v.denominacion}").classes('font-mono font-semibold')
-                        
+                        #with ui.row().classes('w-full items-stretch'):
                         ui.label('Stock:').classes('font-semibold text-gray-500')
                         if v.disponible():
                             ui.label(f"{v.cantidad} unidades").classes('font-bold text-blue-600')
                         else:
                             ui.label(f"{v.cantidad} unidades").classes('font-bold text-red-600')
-                        if v.guarda:
-                            ui.label(f"Vino de guarda").classes('font-semibold text-red-400')
-                            ui.label(f"Consumir hasta {v.fechaConsumo}").classes('font-semibold text-red-400')
+                        with ui.row():
+                            ui.button(icon='add',color='white',on_click=lambda v_id=v.id, stock=v.cantidad + 1: aumentar_stock(v_id,stock)).classes('w-1')
+                            ui.button(icon='remove',color='white',on_click=lambda v_id=v.id, stock=v.cantidad - 1: aumentar_stock(v_id,stock)).classes('w-1')
+                        with ui.row():
+                            if v.guarda:
+                                ui.label(f"Vino de guarda").classes('font-semibold text-red-400')
+                                ui.label(f"Consumir hasta {v.fechaConsumo}").classes('font-semibold text-red-400')
                     # FICHA TÉCNICA (Desplegable compacto)
                     with ui.expansion('Ficha Técnica', icon='description',value=False).classes('w-full bg-gray-200 mt-2'):
                         ui.markdown(f"**Uvas:** {v.variedad1} {v.porcentajeVariedad1}%")
@@ -165,6 +171,18 @@ def eliminar_vino(vino_id: int, nombre: str) -> None:
     else:
         ui.notify("No se pudo eliminar el vino",type='negative')
 
+def aumentar_stock(vino_id:int,stock:int) -> None:
+    # stock += 1
+    # ui.notify(f"{stock},{vino_id}")
+    if stock < 0:
+        ui.notify("Stock cero",type='negative')
+        return
+    else:
+        db.actualizar_stock(vino_id,stock)
+        ui.notify("Stock actualizado",type='positive')
+        refrescar_contenido()
+
+
 dialogo_añadir_vino = ui.dialog()
 # --- Sección para añadir un nuevo vino a la base de datos ---
 with dialogo_añadir_vino:
@@ -180,6 +198,7 @@ with dialogo_añadir_vino:
         guarda = ui.switch('Vino de guarda').bind_value(nuevo_vino,'guarda')
         fechaConsumo = ui.number('Fecha de consumo',value=2024,min=2000).bind_visibility_from(guarda,'value').bind_value(nuevo_vino,'fechaConsumo')
         stock = ui.number('Cantidad',min=1).bind_value(nuevo_vino,'cantidad')
+                    
         with ui.expansion('FICHA TÉCNICA',icon='description').classes('w-full bg-gray-200 border'):
             with ui.element('div').classes('grid grid-cols-2 gap-4 w-full'):
                 uva1 = ui.input("Variedad principal").bind_value(nuevo_vino,'variedad1')
@@ -201,7 +220,7 @@ with ui.card().classes('w-full mb-4'):
     ui.label("Filtros").classes('font-bold text-lg')
 
     with ui.row().classes('w-full items-end gap-4'):
-        ui.number("Cosecha").classes('text-gray').bind_value(filtros,'cosecha')
+        ui.number("Cosecha",min=2000).classes('text-gray').bind_value(filtros,'cosecha')
         ui.input("Denominacion").classes('text-gray').bind_value(filtros,'denominacion')
         ui.select(['Tinto','Blanco','Rosado','Espumoso rosado','Espumoso'],label='Tipo',with_input=True).bind_value(filtros,'tipo')
         ui.input("Pais").classes('text-black').bind_value(filtros,'pais')
