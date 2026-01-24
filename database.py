@@ -61,31 +61,57 @@ class Database:
         
     def obtener_vinos(self,filtros=None) -> list:
         
-        sql = "SELECT * FROM vinos"
-        filtro = ()
+        # sql = "SELECT * FROM vinos"
+        # filtro = ()
         
-        if filtros:
-            if filtros.cosecha:
-                sql += " WHERE cosecha = ?"
-                filtro = (filtros.cosecha,)
-            if filtros.denominacion:
-                sql += " WHERE denominacion = ?"
-                filtro = (filtros.denominacion,)
-            if filtros.tipo:
-                sql += " WHERE tipo LIKE ?"
-                filtro = (filtros.tipo,)
-            if filtros.pais:
-                sql += " WHERE pais LIKE ?"
-                filtro = (filtros.pais,)
-            if filtros.sinStock:
-                sql += " WHERE cantidad = ?"
-                filtro = (0,)
-            if filtros.cantidad:
-                sql += " WHERE cantidad = ?"
-                filtro = (filtros.cantidad,)
+        # if filtros:
+        #     if filtros.cosecha:
+        #         sql += " WHERE cosecha = ?"
+        #         filtro = (filtros.cosecha,)
+        #     if filtros.denominacion:
+        #         sql += " WHERE denominacion = ?"
+        #         filtro = (filtros.denominacion,)
+        #     if filtros.tipo:
+        #         sql += " WHERE tipo LIKE ?"
+        #         filtro = (filtros.tipo,)
+        #     if filtros.pais:
+        #         sql += " WHERE pais LIKE ?"
+        #         filtro = (filtros.pais,)
+        #     if filtros.sinStock:
+        #         sql += " WHERE cantidad = ?"
+        #         filtro = (0,)
+        #     if filtros.cantidad:
+        #         sql += " WHERE cantidad = ?"
+        #         filtro = (filtros.cantidad,)
                 
 
-        self.cursor.execute(sql,filtro)
+        # self.cursor.execute(sql,filtro)
+
+        sql = "SELECT * FROM vinos WHERE 1=1"
+        params = []
+
+        if filtros:
+            if filtros.cosecha:
+                sql += " AND cosecha = ?"
+                params.append(filtros.cosecha)
+
+            if filtros.tipo:
+                sql += " AND tipo = ?"
+                params.append(filtros.tipo)
+
+            if filtros.pais:
+                sql += " AND pais LIKE ?"
+                params.append(f"%{filtros.pais}%")
+
+            if filtros.denominacion:
+                sql += " AND denominacion LIKE ?"
+                params.append(f"%{filtros.denominacion}%")
+            if filtros.sinStock:
+                sql += " AND cantidad = ?"
+                params.append(0)
+
+        self.cursor.execute(sql, params)
+
         columnas = [col[0] for col in self.cursor.description]
 
         vinos = []

@@ -71,8 +71,8 @@ def refrescar_contenido() -> None:
                         else:
                             ui.label(f"{v.cantidad} unidades").classes('font-bold text-red-600')
                         with ui.row():
-                            ui.button(icon='add',color='white',on_click=lambda v_id=v.id, stock=v.cantidad + 1: aumentar_stock(v_id,stock)).classes('w-1')
-                            ui.button(icon='remove',color='white',on_click=lambda v_id=v.id, stock=v.cantidad - 1: aumentar_stock(v_id,stock)).classes('w-1')
+                            ui.button(icon='add',color='white',on_click=lambda v_id=v.id, stock=v.cantidad + 1: variar_stock(v_id,stock)).classes('w-1')
+                            ui.button(icon='remove',color='white',on_click=lambda v_id=v.id, stock=v.cantidad - 1: variar_stock(v_id,stock)).classes('w-1')
                         with ui.row():
                             if v.guarda:
                                 ui.label(f"Vino de guarda").classes('font-semibold text-red-400')
@@ -110,7 +110,10 @@ def refrescar_contenido() -> None:
                                     ui.separator()
            
 
-def guardar_vino():
+def guardar_vino() -> None:
+    '''
+    Función para guardar un nuevo vino en la base de datos.
+    '''
 
     if not nuevo_vino.nombre:
         ui.notify('El nombre del vino es obligatorio',type='negative')
@@ -124,7 +127,15 @@ def guardar_vino():
     dialogo_añadir_vino.close()   
     refrescar_contenido()
 
-def guardar_cata(vino_id,nota):
+def guardar_cata(vino_id: int,nota: Nota) -> None:
+    '''
+    Función para añadir una nueva nota de cata a un vino
+    
+    :param vino_id: id del vino al que se va a asociar la nueva nota de cata
+    :type vino_id: int
+    :param nota: nota de cata
+    :type nota: Nota
+    '''
     if not nota.fechaCata or not nota.notaCata:
         ui.notify('Completa la fecha y la nota', type='negative')
         return
@@ -133,7 +144,15 @@ def guardar_cata(vino_id,nota):
     ui.notify('Nota de cata guardada', type='positive')
     refrescar_contenido()
 
-def leer_catas(vino_id):
+def leer_catas(vino_id: int) -> list:
+    '''
+    Función para recuperar y leer las catas asociadas a un vino
+    
+    :param vino_id: la id del vino al que se va a añadir la cata
+    :type vino_id: int
+    :return: Retorna las catas asociadas al vino con id vino_id
+    :rtype: list
+    '''
     catas = db.obtener_catas(vino_id)
     return catas
 
@@ -171,9 +190,8 @@ def eliminar_vino(vino_id: int, nombre: str) -> None:
     else:
         ui.notify("No se pudo eliminar el vino",type='negative')
 
-def aumentar_stock(vino_id:int,stock:int) -> None:
-    # stock += 1
-    # ui.notify(f"{stock},{vino_id}")
+def variar_stock(vino_id:int,stock:int) -> None:
+    
     if stock < 0:
         ui.notify("Stock cero",type='negative')
         return
