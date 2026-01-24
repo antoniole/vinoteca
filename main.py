@@ -52,7 +52,7 @@ def refrescar_contenido() -> None:
                             ui.badge(v.tipo, color=color_bg, text_color=color_txt).classes('text-xs font-mono')
                         # Botones para edición/eliminación de cada vino
                         with ui.column().classes('gap-1 items-left'):                            
-                            ui.button(icon='edit_document',color='green').props('size=10px')
+                            ui.button(icon='edit_document',color='green',on_click=lambda v=v: actualizar_vino(v)).props('size=10px')
                             ui.button(icon='o_delete',color='red',on_click=lambda v=v: confirmar_eliminacion_vino(v)).props('size=10px')                       
                             
                     ui.separator()
@@ -200,6 +200,48 @@ def variar_stock(vino_id:int,stock:int) -> None:
         ui.notify("Stock actualizado",type='positive')
         refrescar_contenido()
 
+def actualizar_vino(vino: Vino) -> None:
+    '''
+    Función para actualizar los valores de un vino
+    
+    :param vino: El objeto Vino que vamos a modificar
+    :type vino: Vino
+    '''
+    dialogo_actualizar_vino = ui.dialog()
+    dialogo_actualizar_vino.open()
+
+    with dialogo_actualizar_vino:
+        with ui.card().classes('w-full'):
+            ui.label("Editar vino").classes('text-lg font-bold')
+            with ui.element('div').classes('grid grid-cols-2 gap-4 w-full'):                
+                ui.input('Nombre',value=vino.nombre)
+                ui.number('Cosecha',value=vino.cosecha)
+                ui.select(['Tinto','Blanco','Rosado','Espumoso','Espumoso rosado'],label='Tipo',with_input=True,value=vino.tipo)
+                ui.input('Bodega',value=vino.bodega)
+                ui.input('Pais',value=vino.pais)
+                ui.input('Denominación',value=vino.denominacion)
+                ui.switch('Vino de guarda',value=vino.guarda)
+                ui.number('Fecha de consumo',value=vino.fechaConsumo,min=2000)
+                ui.number('Cantidad',value=vino.cantidad,min=1)
+
+            with ui.expansion('FICHA TÉCNICA',icon='description').classes('w-full bg-gray-200 border'):
+                with ui.element('div').classes('grid grid-cols-2 gap-4 w-full'):
+                    ui.input("Variedad principal",value=vino.variedad1)
+                    ui.number('Porcentaje variedad principal',value=vino.porcentajeVariedad1,format='%d',max=100,min=0)
+                    ui.input("Variedad 2",value=vino.variedad2)
+                    ui.number('Porcentaje variedad 2',value=vino.porcentajeVariedad2,format='%d',max=100,min=0)
+                    ui.input("Variedad 3",value=vino.variedad3)
+                    ui.number('Porcentaje variedad 3',value=vino.porcentajeVariedad3,format='%d',max=100,min=0)
+                    ui.input("Variedad 4",value=vino.variedad4)
+                    ui.number('Porcentaje variedad 4',value=vino.porcentajeVariedad4,format='%d',max=100,min=0)
+                ui.textarea('Elaboración',value=vino.fichaTecnica).classes('w-full')
+            ui.button("GUARDAR",on_click=lambda: (guardar_vino_actualizado(vino),dialogo_actualizar_vino.close))
+            ui.button("CERRAR",on_click=dialogo_actualizar_vino.close)
+
+def guardar_vino_actualizado(vino: Vino) -> None:
+    db.actualizar_vino(vino)
+    ui.notify("Vino actualizado",type='positive')
+    return
 
 dialogo_añadir_vino = ui.dialog()
 # --- Sección para añadir un nuevo vino a la base de datos ---

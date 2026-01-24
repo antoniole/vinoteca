@@ -61,32 +61,6 @@ class Database:
         
     def obtener_vinos(self,filtros=None) -> list:
         
-        # sql = "SELECT * FROM vinos"
-        # filtro = ()
-        
-        # if filtros:
-        #     if filtros.cosecha:
-        #         sql += " WHERE cosecha = ?"
-        #         filtro = (filtros.cosecha,)
-        #     if filtros.denominacion:
-        #         sql += " WHERE denominacion = ?"
-        #         filtro = (filtros.denominacion,)
-        #     if filtros.tipo:
-        #         sql += " WHERE tipo LIKE ?"
-        #         filtro = (filtros.tipo,)
-        #     if filtros.pais:
-        #         sql += " WHERE pais LIKE ?"
-        #         filtro = (filtros.pais,)
-        #     if filtros.sinStock:
-        #         sql += " WHERE cantidad = ?"
-        #         filtro = (0,)
-        #     if filtros.cantidad:
-        #         sql += " WHERE cantidad = ?"
-        #         filtro = (filtros.cantidad,)
-                
-
-        # self.cursor.execute(sql,filtro)
-
         sql = "SELECT * FROM vinos WHERE 1=1"
         params = []
 
@@ -184,6 +158,43 @@ class Database:
             )
         
         self.cursor.execute(sql,valores)
+        self.conn.commit()
+
+    def actualizar_vino(self, vino: Vino) -> None:
+
+        sql = '''
+        UPDATE vinos SET
+            nombre = ?,
+            tipo = ?,
+            cosecha = ?,
+            bodega = ?,
+            pais = ?,
+            denominacion = ?,
+            variedad1 = ?,
+            porcentaje_variedad1 = ?,
+            variedad2 = ?,
+            porcentaje_variedad2 = ?,
+            variedad3 = ?,
+            porcentaje_variedad3 = ?,
+            variedad4 = ?,
+            porcentaje_variedad4 = ?,
+            es_guarda = ?,
+            fecha_consumo = ?,
+            cantidad = ?,
+            nota_elaboracion = ?
+        WHERE id = ?
+        '''
+        valores = (
+            vino.nombre, vino.tipo, vino.cosecha, vino.bodega,
+            vino.pais, vino.denominacion,
+            vino.variedad1, vino.porcentajeVariedad1,
+            vino.variedad2, vino.porcentajeVariedad2,
+            vino.variedad3, vino.porcentajeVariedad3,
+            vino.variedad4, vino.porcentajeVariedad4,
+            vino.guarda, vino.fechaConsumo, vino.cantidad,
+            vino.fichaTecnica, vino.id
+        )
+        self.cursor.execute(sql, valores)
         self.conn.commit()
     
     def borrar_vino(self,vino_id:int) :
