@@ -192,7 +192,7 @@ class Database:
             vino.variedad3, vino.porcentajeVariedad3,
             vino.variedad4, vino.porcentajeVariedad4,
             vino.guarda, vino.fechaConsumo, vino.cantidad,
-            vino.fichaTecnica, vino.id
+            vino.fichaTecnica,vino.id
         )
         self.cursor.execute(sql, valores)
         self.conn.commit()
@@ -206,9 +206,7 @@ class Database:
     def actualizar_stock(self,vino_id:int,stock) -> None:
         self.cursor.execute("UPDATE vinos SET cantidad = ? WHERE id = ?",(stock,vino_id))
         self.conn.commit()
-        
-
-        
+       
     def guardar_nota_elaboracion(self,vino_id,texto):
         '''
         Función para guardar una nota de elaboración (ficha técnica) de forma independiente al incorporar un nuevo vino
